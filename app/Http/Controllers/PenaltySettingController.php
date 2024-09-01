@@ -27,7 +27,7 @@ class PenaltySettingController extends Controller
 
     public function penaltysubmit(Request $request)
     {
-        
+
         // Validate the request data
         $request->validate([
             'memberid' => 'required|exists:members,id',
@@ -51,6 +51,7 @@ class PenaltySettingController extends Controller
 
         // Calculate the penalty amount if the payment failed
         if ($paymentStatus === 'failed_pay' && $request->penalty_percentage) {
+            // Assuming the penalty amount should be calculated using the increased installment
             $penaltyAmount = $request->installment_increased ?? 0;
         }
 
@@ -64,7 +65,7 @@ class PenaltySettingController extends Controller
         // Create or update the installment record
         $installment = Installment::create([
             'member_id' => $member->id,
-            'amount' => $request->amount,
+            'amount' =>$request->amount,
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'payment_pending_old' => $request->member_old_installment,
@@ -83,7 +84,7 @@ class PenaltySettingController extends Controller
             'address' => $request->memberAddress,
             'installment_amount' => $request->member_old_installment,
             'installment_amount_stand_current' => $request->member_incresed_installment,
-            'paid_amount' => $request->amount,
+            'paid_amount' =>$request->amount,
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'paid' => $paymentStatus === 'paid',
@@ -101,5 +102,6 @@ class PenaltySettingController extends Controller
             'message' => 'Penalty and installment updated successfully',
         ]);
     }
+
 
 }

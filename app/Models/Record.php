@@ -23,4 +23,9 @@ class Record extends Model
         'due_date',
         'payment_date',
     ];
+
+    protected $casts = [
+        'due_date' => 'datetime',
+        'payment_date' => 'datetime',
+    ];
 }

@@ -17,20 +17,20 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone', 15);
-            $table->string('address');
-            $table->string('installment_amount')->nullable();
-            $table->string('installment_amount_stand_current')->nullable(); // Made nullable
-            $table->string('paid_amount')->nullable();
-            $table->decimal('penalty_amount', 10, 2)->default(0);
-            $table->decimal('payment_pending_amount', 10, 2)->default(0);
+            $table->string('address'); // Changed from decimal to string
+            $table->decimal('installment_amount', 10, 2)->nullable(); // Ensure precision and scale
+            $table->decimal('installment_amount_stand_current', 10, 2)->nullable(); // Ensure precision and scale
+            $table->decimal('paid_amount', 10, 2)->nullable(); // Ensure precision and scale
+            $table->decimal('penalty_amount', 10, 2)->default(0); // Ensure precision and scale
+            $table->decimal('payment_pending_amount', 10, 2)->default(0); // Ensure precision and scale
             $table->boolean('paid')->default(false);
             $table->date('due_date');
             $table->date('payment_date')->nullable();
             $table->timestamps();
         });
 
-
     }
+
 
     /**
      * Reverse the migrations.

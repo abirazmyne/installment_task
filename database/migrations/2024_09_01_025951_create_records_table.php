@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('records', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->constrained()->onDelete('cascade'); // This line ensures member_id is a foreign key and required
+            $table->foreignId('member_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('email');
             $table->string('phone', 15);
             $table->string('address');
             $table->decimal('installment_amount', 8, 2);
-            $table->decimal('amount', 10, 2); // The original installment amount
-            $table->decimal('penalty_amount', 10, 2)->default(0); // Any penalty applied
-            $table->decimal('payment_pending_amount', 10, 2)->default(0); // The amount still pending
-            $table->boolean('paid')->default(false); // Whether the installment is paid
-            $table->date('due_date'); // The due date of the installment
-            $table->date('payment_date')->nullable(); // The actual payment date if paid
+            $table->decimal('installment_amount_stand_current', 8, 2)->nullable(); // Made nullable
+            $table->string('paid_amount')->nullable();
+            $table->decimal('penalty_amount', 10, 2)->default(0);
+            $table->decimal('payment_pending_amount', 10, 2)->default(0);
+            $table->boolean('paid')->default(false);
+            $table->date('due_date');
+            $table->date('payment_date')->nullable();
             $table->timestamps();
         });
 

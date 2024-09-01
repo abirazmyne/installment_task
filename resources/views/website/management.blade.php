@@ -45,7 +45,7 @@
                     <td>{{ $record->penalty_amount }}</td>
                     <td>{{ $record->payment_pending_amount }}</td>
                     <td>{{ $record->paid ? 'Yes' : 'No' }}</td>
-              
+
                 </tr>
             @endforeach
             </tbody>

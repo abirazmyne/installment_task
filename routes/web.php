@@ -12,8 +12,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Route to store a new member
 Route::post('/members/store', [MemberController::class, 'store'])->name('members.store');
 Route::get('/records/{member_id}', [RecordController::class, 'showRecords'])->name('records.show');
-// routes/web.php
-// routes/web.php
+
+
 Route::post('/penalty/store', [PenaltySettingController::class, 'penaltysubmit'])->name('submit.member.data');
 Route::get('/showManagementPage/{id}', [PenaltySettingController::class, 'showManagementPage'])->name('management.page');
 

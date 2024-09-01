@@ -206,15 +206,15 @@
                             </div>
                             <div class="mb-3">
                                 <label for="memberInstallmentAmountold" class="form-label">Installment Total Amount before Penalty Include</label>
-                                <input type="text" class="form-control" id="memberInstallmentAmountold" name="memberInstallmentAmountold" readonly>
+                                <input type="text" class="form-control" id="memberInstallmentAmountold" name="member_old_installment" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="memberInstallmentAmount" class="form-label">Installment Total Amount</label>
-                                <input type="text" class="form-control" id="memberInstallmentAmount" name="memberInstallmentAmount" readonly>
+                                <input type="text" class="form-control" id="memberInstallmentAmount" name="member_incresed_installment" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="amountIncreased" class="form-label">Amount Increased</label>
-                                <input type="text" class="form-control" id="amountIncreased" name="amountIncreased" readonly>
+                                <input type="text" class="form-control" id="amountIncreased" name="installment_increased" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="penalty_percentage" class="form-label">Select Penalty Percentage</label>

@@ -25,6 +25,7 @@ class PenaltySettingController extends Controller
         ]);
     }
 
+
     public function penaltysubmit(Request $request)
     {
         // Validate the request data
@@ -34,6 +35,9 @@ class PenaltySettingController extends Controller
             'penalty_percentage' => 'nullable|numeric',
             'payment_date' => 'nullable|date',
             'payment_status' => 'required|in:paid,failed_pay',
+            'member_old_installment' => 'required|numeric',
+            'member_incresed_installment' => 'required|numeric',
+            'installment_increased' => 'nullable|numeric',
         ]);
 
         // Retrieve the member
@@ -42,12 +46,12 @@ class PenaltySettingController extends Controller
         // Determine the payment status
         $paymentStatus = $request->payment_status;
 
-        // Calculate the penalty amount if the payment failed
+        // Initialize penalty amount
         $penaltyAmount = 0;
+
+        // Calculate the penalty amount if the payment failed
         if ($paymentStatus === 'failed_pay' && $request->penalty_percentage) {
             $penaltyAmount = ($request->amount * $request->penalty_percentage) / 100;
-        } elseif ($paymentStatus === 'paid' && $request->penalty) {
-            $penaltyAmount = $request->penalty;
         }
 
         // Calculate the payment pending amount
@@ -60,7 +64,7 @@ class PenaltySettingController extends Controller
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'paid' => $paymentStatus === 'paid',
-            'due_date' => now(),
+            'due_date' => now()->day >= 7 ? now()->startOfMonth()->addMonth()->day(7) : now()->startOfMonth()->day(7),
             'payment_date' => $paymentStatus === 'paid' ? $request->payment_date : null,
         ]);
 
@@ -71,12 +75,13 @@ class PenaltySettingController extends Controller
             'email' => $request->memberEmail,
             'phone' => $request->memberPhone,
             'address' => $request->memberAddress,
-            'installment_amount' => $request->memberInstallmentAmount,
-            'amount' => $request->amount,
+            'installment_amount' => $request->member_incresed_installment,
+            'installment_amount_stand_current' => $request->member_old_installment ?? 0, // Provide default value if null
+            'paid_amount' => $request->amount,
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'paid' => $paymentStatus === 'paid',
-            'due_date' => now(),
+            'due_date' => now()->day >= 7 ? now()->startOfMonth()->addMonth()->day(7) : now()->startOfMonth()->day(7),
             'payment_date' => $paymentStatus === 'paid' ? $request->payment_date : null,
         ]);
 
@@ -95,8 +100,6 @@ class PenaltySettingController extends Controller
             'message' => 'Penalty and installment updated successfully',
         ]);
     }
-
-
 
 
 }

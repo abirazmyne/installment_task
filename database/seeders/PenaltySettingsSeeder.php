@@ -11,6 +11,8 @@ class PenaltySettingsSeeder extends Seeder
     {
         // Define default penalty percentages
         $penalties = [
+            0.00,
+            1.00,
             2.00,
             3.00,
             4.00,

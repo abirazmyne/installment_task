@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('member_id')->constrained()->onDelete('cascade');
 
             $table->decimal('amount', 10, 2); // The original installment amount
+            $table->decimal('payment_pending_old')->nullable();
+            $table->decimal('payment_pending_increased')->nullable();
             $table->decimal('penalty_amount', 10, 2)->default(0); // Any penalty applied
             $table->decimal('payment_pending_amount', 10, 2)->default(0); // The amount still pending
             $table->boolean('paid')->default(false); // Whether the installment is paid

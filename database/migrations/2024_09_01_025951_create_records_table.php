@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone', 15);
             $table->string('address');
-            $table->decimal('installment_amount', 8, 2);
-            $table->decimal('installment_amount_stand_current', 8, 2)->nullable(); // Made nullable
+            $table->string('installment_amount')->nullable();
+            $table->string('installment_amount_stand_current')->nullable(); // Made nullable
             $table->string('paid_amount')->nullable();
             $table->decimal('penalty_amount', 10, 2)->default(0);
             $table->decimal('payment_pending_amount', 10, 2)->default(0);

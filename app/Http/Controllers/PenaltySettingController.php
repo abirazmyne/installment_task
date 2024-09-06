@@ -27,12 +27,10 @@ class PenaltySettingController extends Controller
 
     public function penaltysubmit(Request $request)
     {
-
-        // Validate the request data
         $request->validate([
             'memberid' => 'required|exists:members,id',
             'amount' => 'required|numeric',
-            'penalty_percentage' => 'nullable|numeric',
+            'penalty_percentage' => 'nullable|numeric|min:0',
             'payment_date' => 'nullable|date',
             'payment_status' => 'required|in:paid,failed_pay',
             'member_old_installment' => 'required|numeric',
@@ -40,42 +38,44 @@ class PenaltySettingController extends Controller
             'installment_increased' => 'nullable|numeric',
         ]);
 
-        // Retrieve the member
         $member = Member::findOrFail($request->memberid);
+        $recordCount = Record::where('member_id', $member->id)->count();
+        if ($recordCount >= 12) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'message' => 'You have already installed 12 payments.',
+            ]);
+        }
 
-        // Determine the payment status
         $paymentStatus = $request->payment_status;
 
         // Initialize penalty amount
         $penaltyAmount = 0;
 
-        // Calculate the penalty amount if the payment failed
+
         if ($paymentStatus === 'failed_pay' && $request->penalty_percentage) {
-            // Assuming the penalty amount should be calculated using the increased installment
-            $penaltyAmount = $request->installment_increased ?? 0;
+            $penaltyAmount = ($request->installment_increased * $request->penalty_percentage) / 100;
         }
 
         // Calculate the payment pending amount based on payment status
         if ($paymentStatus === 'failed_pay') {
-            $paymentPendingAmount = $request->member_incresed_installment - $request->amount;
+            $paymentPendingAmount = $request->member_incresed_installment - $request->amount + $penaltyAmount;
         } else { // paymentStatus === 'paid'
             $paymentPendingAmount = $request->member_old_installment - $request->amount;
         }
 
-        // Create or update the installment record
-        $installment = Installment::create([
+        Installment::create([
             'member_id' => $member->id,
-            'amount' =>$request->amount,
+            'amount' => $request->amount,
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'payment_pending_old' => $request->member_old_installment,
             'payment_pending_increased' => $request->member_incresed_installment,
             'paid' => $paymentStatus === 'paid',
-            'due_date' => now()->day >= 7 ? now()->startOfMonth()->addMonth()->day(7) : now()->startOfMonth()->day(7),
+            'due_date' => now()->startOfMonth()->addMonth()->day(7),
             'payment_date' => $paymentStatus === 'paid' ? $request->payment_date : null,
         ]);
 
-        // Create a record entry using the Record model
         Record::create([
             'name' => $request->memberName,
             'member_id' => $request->memberid,
@@ -84,24 +84,23 @@ class PenaltySettingController extends Controller
             'address' => $request->memberAddress,
             'installment_amount' => $request->member_old_installment,
             'installment_amount_stand_current' => $request->member_incresed_installment,
-            'paid_amount' =>$request->amount,
+            'paid_amount' => $request->amount,
             'penalty_amount' => $penaltyAmount,
             'payment_pending_amount' => $paymentPendingAmount,
             'paid' => $paymentStatus === 'paid',
-            'due_date' => now()->day >= 7 ? now()->startOfMonth()->addMonth()->day(7) : now()->startOfMonth()->day(7),
+            'due_date' => now()->startOfMonth()->addMonth()->day(7),
             'payment_date' => $paymentStatus === 'paid' ? $request->payment_date : null,
         ]);
 
-        // Update the member's installment amount
         $member->installment_amount = $paymentPendingAmount;
         $member->save();
 
-        // Redirect to the records view for the specific member
         return redirect()->route('records.show', ['member_id' => $member->id])->with([
             'status' => 'success',
             'message' => 'Penalty and installment updated successfully',
         ]);
     }
+
 
 
 }

@@ -133,6 +133,27 @@
 
 
 <script>
+    function handleSweetAlertResponse(response, successMessage, errorMessage) {
+        if (response.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: successMessage || response.message
+            }).then(() => {
+                // Reload the DataTable or perform any additional actions
+                $('#membersTable').DataTable().ajax.reload();
+                $('.modal').modal('hide'); // Close any open modals
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage || response.message
+            });
+        }
+    }
+
+
     $(document).ready(function() {
             var table = $('#membersTable').DataTable({
                 processing: true,
@@ -515,6 +536,8 @@
     });
     });
 </script>
+
+
 
 
 </body>
